@@ -1,0 +1,86 @@
+" vim: ft=vim
+" " {{{ vim gdb plugin settings
+" " if !exists('g:nvimgdb_disable_start_keymaps') || !g:nvimgdb_disable_start_keymaps
+" nnoremap <leader>dd :GdbStart gdb -q  ./build/rfid
+" nnoremap <leader>dl :GdbStartLLDB lldb ./build/rfid
+" nnoremap <leader>dp :GdbStartPDB python -m pdb main.py
+" " }}} vim gdb plugin settings
+" " endif
+
+" " {{{ Overwrite spell setting.
+" " turn on spell
+" set spell
+" " language setting en, de  additionally use ctags to avoid  mismatched hits
+" " -> ctags file needed.
+
+
+" repsecting my .gitignore with fzf
+" fzf will ignore all files which ignored by git
+" let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -l -g ""'
+let $FZF_DEFAULT_COMMAND = 'rg --hidden --vimgrep --files -l'
+
+set spelllang=de,en,libxmlr600FromTags
+
+let g:startify_change_to_dir = 0
+
+" " }}}
+let g:gutentags_project_root = ['.vimproject']
+let g:gutentags_ctags_tagfile = 'tags'
+let g:gutentags_scopefile_tagfile = 'cscope.out'
+let g:gutentags_generate_on_new = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_empty_buffer = 0
+let g:gutentags_ctags_extra_args = [
+            \ '--tag-relative=yes',
+            \ '--fields=+ailmnS',
+            \ ]
+
+
+let g:gutentags_ctags_exclude = [
+            \ '*.git', '*.svg', '*.hg',
+            \ '*/tests/*',
+            \ 'build',
+            \ 'dist',
+            \ '*sites/*/files/*',
+            \ 'bin',
+            \ 'node_modules',
+            \ 'bower_components',
+            \ 'cache',
+            \ 'compiled',
+            \ 'docs',
+            \ 'example',
+            \ 'bundle',
+            \ 'vendor',
+            \ '*.md',
+            \ '*-lock.json',
+            \ '*.lock',
+            \ '*bundle*.js',
+            \ '*build*.js',
+            \ '.*rc*',
+            \ '*.json',
+            \ '*.min.*',
+            \ '*.map',
+            \ '*.bak',
+            \ '*.zip',
+            \ '*.pyc',
+            \ '*.class',
+            \ '*.sln',
+            \ '*.Master',
+            \ '*.csproj',
+            \ '*.tmp',
+            \ '*.csproj.user',
+            \ '*.cache',
+            \ '*.pdb',
+            \ 'tags*',
+            \ 'cscope.*',
+            \ '*.css',
+            \ '*.less',
+            \ '*.scss',
+            \ '*.exe', '*.dll',
+            \ '*.mp3', '*.ogg', '*.flac',
+            \ '*.swp', '*.swo',
+            \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+            \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+            \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+            \ ]
