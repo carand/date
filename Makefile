@@ -6,7 +6,7 @@ BUILD_TYPE=Debug
 # BUILD_TYPE=MinSizeRel
 
 
-
+RELEASE_DIR=/home/cmd/repos/cpp/DafuR/Release/
 CMAKE_BUILD_DIR= build
 compile_commands=$(CMAKE_BUILD_DIR)/compile_commands.json
 
@@ -21,6 +21,13 @@ BUILD_TOOL = "Unix Makefiles"
 
 default: $(APP_NAME)
 
+release:
+	$(CMAKE) -H. -BRelease -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"  \
+	-DBUILD_32=ON \
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DCMAKE_INSTALL_PREFIX:PATH=$(RELEASE_DIR)
+	$(MAKE) -C Release $(APP_NAME)
 
 $(CMAKE_BUILD_DIR): generate_build_tool
 
@@ -99,6 +106,9 @@ install_global:|
 	$(MAKE) $(APP_NAME)
 	cd ${CMAKE_BUILD_DIR} && sudo $(MAKE) install && cd ..
 
+install_release: distclean release
+	mkdir -p $(RELEASE_DIR)
+	cd Release && $(MAKE) install && cd ..
 
 
 tags: | $(CMAKE_BUILD_DIR)
