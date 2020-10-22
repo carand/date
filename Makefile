@@ -1,12 +1,12 @@
 CMAKE = cmake
 #Switch to activatad Build Type
-BUILD_TYPE=Debug
-# BUILD_TYPE=Release
+# BUILD_TYPE=Debug
+BUILD_TYPE=Release
 # BUILD_TYPE=RelWithDebInfo
 # BUILD_TYPE=MinSizeRel
 
+RELEASE_DIR=./INSTALL_DIR
 
-RELEASE_DIR=/home/cmd/repos/cpp/DafuR/Release/
 CMAKE_BUILD_DIR= build
 compile_commands=$(CMAKE_BUILD_DIR)/compile_commands.json
 
