@@ -1,0 +1,51 @@
+# vim: set filetype=cmake
+# vim: set syntax=cmake
+
+# general cpack variables
+set(CPACK_PACKAGE_CONTACT "${APP_EMAIL}")
+set(CPACK_PACKAGE_VENDOR "${APP_VENDOR}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${APP_DESCRIPTION}")
+
+# CPACK_PACKAGE_VERSION
+SET(CPACK_PACKAGE_VERSION_MAJOR "${APP_VERSION_MAJOR}")
+SET(CPACK_PACKAGE_VERSION_MINOR "${APP_VERSION_MINOR}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${APP_VERSION_PATCH}")
+
+# add date stamp to CPACK_PACKAGE_VERSION
+string(TIMESTAMP STAMP "%Y%m%d+%H%M%S")
+
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
+
+################################################################################
+### package dependencies
+################################################################################
+# set(MY_DEPENDEC)
+
+
+
+################################################################################
+### active generators
+################################################################################
+set(CPACK_GENERATOR "DEB")
+
+################################################################################
+### debian package specific stuff
+################################################################################
+#set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
+### Package dependencies
+# SET(CPACK_DEBIAN_PACKAGE_DEPENDS "")
+
+SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
+
+if(BUILD_32)
+    SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+else()
+    SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
+endif()
+# autogenerate dependency information
+set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
+
+include(CPack)
