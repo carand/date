@@ -17,6 +17,20 @@ string(TIMESTAMP STAMP "%Y%m%d+%H%M%S")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
 set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
 
+# if architecture is already set (e.g. to "all"), this is not needed
+# add ~distribution-codename (e.g. ~trusty or ~xenial) to end of package version
+# if lsb_release is available, take it from there or fall back to DISTRO_CODENAME env variable
+set(DISTRO_CODENAME $ENV{DISTRO_CODENAME})
+find_program(LSB_RELEASE_CMD lsb_release)
+mark_as_advanced(LSB_RELEASE_CMD)
+if (LSB_RELEASE_CMD)
+    execute_process(COMMAND "${LSB_RELEASE_CMD}" --codename --short
+        OUTPUT_VARIABLE DISTRO_CODENAME
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif ()
+
+set(CPACK_PACKAGE_FILE_NAME
+    "${APP_NAME}-${CPACK_PACKAGE_VERSION}-${DISTRO_CODENAME}")
 ################################################################################
 ### package dependencies
 ################################################################################
@@ -46,6 +60,6 @@ else()
 endif()
 # autogenerate dependency information
 set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-
+set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
 
 include(CPack)
