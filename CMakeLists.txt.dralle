@@ -1,0 +1,22 @@
+
+# vim: set filetype=cmake
+# vim: set syntax=cmake
+
+set(APP_DESCRIPTION "A date and time library based on the C++11/14/17 <chrono> header")
+set(APP_WEBSITE "https://github.com/HowardHinnant/date")
+set(APP_EMAIL "Carben@drallesystem.de")
+set(APP_VENDOR "www.drallesystem.de")
+
+
+set(APP_VERSION_MAJOR 3) # will be increased on incompatible changes
+set(APP_VERSION_MINOR 0) # will be increased on new features in backwards compatible manner
+set(APP_VERSION_PATCH 0) # will be increased on bugfixes
+
+
+set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}")
+set(PROJ_NAME "date") # PROJECT_NAME is a predefined variable
+
+# Set PROJECT_NAME_UPPERCASE and PROJECT_NAME_LOWERCASE variables
+string(TOUPPER ${PROJ_NAME} PROJ_NAME_UPPERCASE)
+string(TOLOWER ${PROJ_NAME} PROJ_NAME_LOWERCASE)
+set(APP_NAME ${PROJ_NAME_LOWERCASE})

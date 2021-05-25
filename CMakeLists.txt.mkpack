@@ -2,9 +2,10 @@
 # vim: set syntax=cmake
 
 # general cpack variables
-set(CPACK_PACKAGE_CONTACT "${APP_EMAIL}")
-set(CPACK_PACKAGE_VENDOR "${APP_VENDOR}")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${APP_DESCRIPTION}")
+set(CPACK_PACKAGE_CONTACT "carben@drallesystem.de")
+set(CPACK_PACKAGE_VENDOR "www,drallesystem.de")
+set( CPACK_DEBIAN_PACKAGE_DESCRIPTION "A date and time library based on the C++11/14/17 <chrono> header" )
+# set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${APP_DESCRIPTION}")
 
 # CPACK_PACKAGE_VERSION
 SET(CPACK_PACKAGE_VERSION_MAJOR "${APP_VERSION_MAJOR}")
@@ -14,9 +15,16 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${APP_VERSION_PATCH}")
 # add date stamp to CPACK_PACKAGE_VERSION
 string(TIMESTAMP STAMP "%Y%m%d+%H%M%S")
 
-set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
-set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
+# set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-0+${STAMP}")
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
+# place our package in opt
+# set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local/${APP_NAME}")
+# set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local")
+# set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/")
+set(CPACK_PACKAGING_INSTALL_PREFIX "/usr/local/")
+# ignore some folders and files, when generatin source package
+set(CPACK_SOURCE_IGNORE_FILES "${PROJECT_BINARY_DIR};/\.git/;\.swp$;\.#;/#;.*~;cscope.*;\.gitignore;\.gdb_history;\.nvimlog;tags$;/INSTALL_DIR/")
 # if architecture is already set (e.g. to "all"), this is not needed
 # add ~distribution-codename (e.g. ~trusty or ~xenial) to end of package version
 # if lsb_release is available, take it from there or fall back to DISTRO_CODENAME env variable
@@ -29,8 +37,6 @@ if (LSB_RELEASE_CMD)
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif ()
 
-set(CPACK_PACKAGE_FILE_NAME
-    "${APP_NAME}-${CPACK_PACKAGE_VERSION}-${DISTRO_CODENAME}")
 ################################################################################
 ### package dependencies
 ################################################################################
@@ -44,22 +50,58 @@ set(CPACK_PACKAGE_FILE_NAME
 set(CPACK_GENERATOR "DEB")
 
 ################################################################################
+### source generators
+################################################################################
+set(CPACK_SOURCE_GENERATOR "TGZ")
+
+################################################################################
 ### debian package specific stuff
 ################################################################################
 #set(CPACK_DEBIAN_PACKAGE_DEBUG ON)
 ### Package dependencies
 # SET(CPACK_DEBIAN_PACKAGE_DEPENDS "")
-
-SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
-SET(CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
+# set( CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4, libstdc++6" )
+# cpack deb generator variables
+# https://cmake.org/cmake/help/latest/cpack_gen/deb.html#cpack_gen:CPack%20DEB%20Generator
+# SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+SET(CPACK_DEBIAN_PACKAGE_SECTION "devel")
 
 if(BUILD_32)
     SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
 else()
     SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
 endif()
+
+
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+    set(CPACK_PACKAGE_FILE_NAME
+        "${APP_NAME}-${CPACK_PACKAGE_VERSION}-${DISTRO_CODENAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+    SET (CPACK_STRIP_FILES  TRUE )
+else ()
+
+    set(CPACK_PACKAGE_FILE_NAME
+        "${APP_NAME}-${CPACK_PACKAGE_VERSION}-${DISTRO_CODENAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}-dbg")
+endif()
 # autogenerate dependency information
 set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
+set (CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
+set (CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY ">=")
+set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${APP_VENDOR} Carben@drallesystem.de" )
+set (CPACK_DEBIAN_ARCHIVE_TYPE "gnutar")
+set (CPACK_DEBIAN_COMPRESSION_TYPE "gzip")
+set (CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_STRICT_PERMISSION TRUE)
+# if (${CPACK_GENERATOR} STREQUAL "TGZ")
+
+#     set(CPACK_SET_DESTDIR OFF)
+#     set(CMAKE_INSTALL_RPATH ".")
+#     set_target_properties(${APP_NAME}
+#         PROPERTIES INSTALL_RPATH ".")
+# elseif (${CPACK_GENERATOR} STREQUAL "DEB")
+# set(CPACK_SET_DESTDIR ON)
+# set(CMAKE_INSTALL_RPATH "/usr/local/${APP_NAME}")
+# set_target_properties(${APP_NAME}
+# PROPERTIES INSTALL_RPATH "/usr/local/${APP_NAME}")
+# endif ()
 
 include(CPack)

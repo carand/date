@@ -1,0 +1,9 @@
+# vim: set filetype=make
+# vim: set syntax=make
+
+APP_NAME := @APP_NAME@
+APP_TEST := unittests_@APP_NAME@
+FORMAT_APP := @APP_NAME@_clangformat
+FORMAT_TEST := $(APP_TEST)_clangformat
+# HEADERS := @PUBLIC_INC@ @PRIVATE_INC@
+# SRCS := @SRC@ @TEST_SOURCES@

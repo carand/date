@@ -19,6 +19,7 @@ cmake_minimum_required( VERSION 3.7 )
 
 project( date VERSION 3.0.0 )
 
+include(CMakeLists.txt.dralle)
 include( GNUInstallDirs )
 
 get_directory_property( has_parent PARENT_DIRECTORY )
@@ -88,10 +89,11 @@ target_compile_definitions( date INTERFACE
 #[===================================================================[
 tz (compiled) library
 #]===================================================================]
+
 if( BUILD_TZ_LIB )
     add_library( date-tz )
-
     if (BUILD_32)
+        set(CMAKE_SYSTEM_PROCESSOR i386)
         set_target_properties(${APP_NAME} PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
         MESSAGE(STATUS "Excluding 64bit library paths from search.")
         set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS OFF)
@@ -277,24 +279,25 @@ endif( )
 
 
 if( UNIX )
-    set( CPACK_PACKAGE_NAME howardhinnant-date )
-    set( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}-$ENV{BUILD_NUMBER}-buster" )
-    set( CPACK_PACKAGE_CONTACT "Cornerstone Solutions <maintainer@cornerstonesolutions.com.au>" )
-    set( CPACK_DEBIAN_PACKAGE_DESCRIPTION "A date and time library based on the C++11/14/17 <chrono> header" )
-    set( CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4, libstdc++6" )
-    set( CPACK_DEBIAN_PACKAGE_SECTION main )
-    set( CPACK_DEBIAN_PACKAGE_HOMEPAGE https://github.com/HowardHinnant/date )
-    set( CPACK_GENERATOR DEB )
-    if ( NOT "$ENV{CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" STREQUAL "" )
-        set( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "$ENV{CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" )
-    else( )
-        execute_process(
-            COMMAND dpkg --print-architecture
-            OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-            )
-    endif( )
-    set( CPACK_SYSTEM_NAME "${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" )
-endif( )
+    # set( CPACK_PACKAGE_NAME howardhinnant-date )
+    # # set( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}-$ENV{BUILD_NUMBER}-buster" )
+    # set( CPACK_PACKAGE_CONTACT "Cornerstone Solutions <maintainer@cornerstonesolutions.com.au>" )
+    # set( CPACK_DEBIAN_PACKAGE_DESCRIPTION "A date and time library based on the C++11/14/17 <chrono> header" )
+    # set( CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4, libstdc++6" )
+    # set( CPACK_DEBIAN_PACKAGE_SECTION main )
+    # set( CPACK_DEBIAN_PACKAGE_HOMEPAGE https://github.com/HowardHinnant/date )
+    # set( CPACK_GENERATOR DEB )
+    # if ( NOT "$ENV{CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" STREQUAL "" )
+    #     set( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "$ENV{CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" )
+    # else( )
+    #     execute_process(
+    #         COMMAND dpkg --print-architecture
+    #         OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+    #         OUTPUT_STRIP_TRAILING_WHITESPACE
+    #         )
+    # endif( )
+    # set( CPACK_SYSTEM_NAME "${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}" )
 
-include(CPack)
+    include(CMakeLists.txt.mkpack)
+endif( )
+configure_file(support/app.mk.template app.mk)
