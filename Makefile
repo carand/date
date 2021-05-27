@@ -32,7 +32,7 @@ BUILD_TOOL = "Unix Makefiles"
 
 CMAKE_FLAGS += \
 	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-	-DBUILD_SHARED_LIBS=ON
+	-DBUILD_SHARED_LIBS=OFF
 
 ifeq ($(BUILD_ARCH),i386)
 
@@ -51,11 +51,9 @@ ifeq ($(BUILD_TYPE),Debug)
 
 
 CMAKE_FLAGS += \
-	-DGEN_DOCS=ON \
 	-DENABLE_IWYU=OFF \
 	-DENABLE_CPPLINT=OFF \
-	-DENABLE_CLANGTIDY=OFF \
-	-DENABLE_TAGS=ON
+	-DENABLE_CLANGTIDY=OFF
 
 ifdef MAKE_COVERAGE
 MAKE_TESTS := 1
@@ -82,58 +80,23 @@ HTML_INDEX_FILE=${CMAKE_BUILD_DIR}/doc/html/index.html
 CMAKE_TEST_APP_DIR= $(CMAKE_BUILD_DIR)
 
 
-# path to browser
-BROWSER=sensible-browser
-
-$(CMAKE_BUILD_DIR)/$(APP_TEST): | $(CMAKE_BUILD_DIR)
-	$(MAKE) -C $(CMAKE_BUILD_DIR) $(APP_TEST)
-
-
-build_utest: ${CMAKE_BUILD_DIR}/${APP_TEST}
-
-run_utest:  | ${CMAKE_BUILD_DIR}/${APP_TEST}
-	./$(CMAKE_BUILD_DIR)/${APP_TEST}
-
-$(HTML_INDEX_FILE): docs
-
-
-docs:  | $(CMAKE_BUILD_DIR)
-	$(MAKE) -C $(CMAKE_BUILD_DIR) doc
-
-viewDocs :  | $(HTML_INDEX_FILE)
-	@($(BROWSER) $(HTML_INDEX_FILE))
-
-tags: | $(CMAKE_BUILD_DIR)
-	$(MAKE) -C $(CMAKE_BUILD_DIR) tags
 
 
 
-else
+
 
 CMAKE_FLAGS += \
-	-DGEN_DOCS=OFF \
-	-DBUILD_TESTS=OFF \
 	-DENABLE_COVERAGE=OFF \
 	-DENABLE_IWYU=OFF \
 	-DENABLE_CPPLINT=OFF \
-	-DENABLE_CLANGTIDY=OFF \
-	-DENABLE_TAGS=OFF
+	-DENABLE_CLANGTIDY=OFF
 
 endif
 
 
 
-ifndef $(APP_NAME)
-default: generate_build_tool
-else
-default: $(APP_NAME)
-endif
+default: package
 
-# ifndef $(APP_TEST)
-# default: generate_build_tool
-# else
-# default: $(APP_NAME)
-# endif
 
 
 $(CMAKE_BUILD_DIR): generate_build_tool
@@ -145,7 +108,7 @@ generate_build_tool:
 
 
 $(APP_NAME): | $(CMAKE_BUILD_DIR)
-	$(MAKE) -C $(CMAKE_BUILD_DIR) $(APP_NAME)
+	$(MAKE) -C $(CMAKE_BUILD_DIR) all
 
 
 package: | package_deb package_src
@@ -155,6 +118,10 @@ package_src:  | $(CMAKE_BUILD_DIR)
 
 package_deb: | $(CMAKE_BUILD_DIR)
 	$(MAKE) -C $(CMAKE_BUILD_DIR) package
+
+
+install:
+	sudo dpkg -i $(CMAKE_BUILD_DIR)/$(PACKAGE_NAME)*.deb
 
 $(compile_commands) : $(APP_NAME)
 
